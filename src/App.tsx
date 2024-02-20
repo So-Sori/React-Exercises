@@ -1,8 +1,7 @@
 
-import Header from "./part1/Header";
-import Courses from "./part1/1.3/Courses";
-// import Counter from "./part1/Counter";
+import Courses from "./part2/2.1/Courses";
 import { useState } from "react";
+import { ICourse } from "./part2/2.1/Courses";
 import Counter from "./part1/Counter";
 import Clicker from "./part1/Clicker";
 import Counterdouble from "./part1/Counterdouble";
@@ -14,23 +13,50 @@ function App() {
 
   <div className="container display-flex justify-content-center"></div>
 
-  const course = {
-    name:'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7
-      },
-      {
-        name: 'State of a component',
-        exercises: 14
-      }
-    ]
-  }
+  const courses = [
+    {
+      name: 'Half Stack application development',
+      id: 1,
+      parts: [
+        {
+          name: 'Fundamentals of React',
+          exercises: 10,
+          id: 1
+        },
+        {
+          name: 'Using props to pass data',
+          exercises: 7,
+          id: 2
+        },
+        {
+          name: 'State of a component',
+          exercises: 14,
+          id: 3
+        },
+        {
+          name: 'Redux',
+          exercises: 11,
+          id: 4
+        }
+      ]
+    }, 
+    {
+      name: 'Node.js',
+      id: 2,
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
+    }
+  ]
 
   setTimeout(
     () => setCounter(counter + 1),
@@ -40,14 +66,8 @@ function App() {
   return <>
       <Counter counter = {counter}/>
       <Feedback title="Feedback" op1="Good!" op2="Neutral" op3="Bad!"/>
-      <Header header = {course.name}/>
 
-      {course['parts'].map((item) => (
-        <>        
-        <Header header = {item.name}/>
-        <Courses exercises = {item.exercises}/>
-        </>
-      ))}
+      <Courses course={courses} sum={0}/>
 
       <div className="container-fluid py-5 d-flex justify-content-center aling-item-center">
         <Clicker />
