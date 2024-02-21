@@ -18,22 +18,22 @@ interface IPart{
 
 
 function Courses({course,sum}: IProps) {
+  {course[0].parts.map(part =>  {sum += part.exercises})}
+
   return <>
-      <h2>{course[0].name}</h2>
-
-      {course[0].parts.map(part => {
-        return <>
-            {sum += part.exercises}
-            <p key={part.id}>{part.name} course has {part.exercises} exercises</p>
-        </>
-      })}
-
-      <h4>Total of exercises: {sum}</h4>
-      <h3>{course[1].name}</h3>
-      
-      {course[1].parts.map(part => {
-        return <p key={part.id}>{part.name} course has {part.exercises} exercises</p>
-      })}
+      <div className="container text-center">
+        <h2>{course[0].name}</h2>
+        {course[0].parts.map(part => {
+          return <p key={part.id}>{part.name} course has {part.exercises} exercises</p>
+        })}
+        
+        <h4>Total of exercises: {sum}</h4>
+        <h3>{course[1].name}</h3>
+        
+        {course[1].parts.map(part => {
+          return <p key={part.id}>{part.name} course has {part.exercises} exercises</p>
+        })}
+      </div>
       
   </>
 }
