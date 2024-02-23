@@ -9,7 +9,7 @@ interface INotes{
 
 function Note({note}:IProps) {
   return <>
-      <li>{note}</li>
+      <li className="list-group-item">{note}</li>
   </>
 }
 
