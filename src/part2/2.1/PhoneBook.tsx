@@ -1,17 +1,30 @@
 import { useState,useEffect } from "react";
 import axios from "axios"
 
-function PhoneBook() {
 
-    const [persons, setPersons] = useState([{ name: 'Arto Hellas', number: "123456"}]) 
-    const [newName, setNewName] = useState("")
-    const [newNumber, setNewNumber] = useState("")
-    const [filter, setFilter] = useState("")
+interface IPhoneBook{
+    name: string,
+    number: string
+}
+
+function PhoneBook() {
+    
+    const [persons, setPersons] = useState([{name: "Arto Hellas", number: "12345"}]); 
+    const [newName, setNewName] = useState("");
+    const [newNumber, setNewNumber] = useState("");
+    const [filter, setFilter] = useState("");
+
+    useEffect(()=>{
+        axios.get("http://localhost:3001/persons")
+        .then(res => {
+            setPersons(persons.concat(res.data));
+        })
+    },[])
 
     function addPhoneBook(event:React.FormEvent<HTMLFormElement>){
         event.preventDefault();
     
-        const phoneBookObj = {
+        const phoneBookObj: IPhoneBook = {
           name: newName,
           number: newNumber,
         }
@@ -28,7 +41,7 @@ function PhoneBook() {
         axios
         .post('http://localhost:3001/persons', phoneBookObj)
         .then(response => {
-          console.log(response)
+            setPersons(persons.concat(response.data));
         })
     }
 
@@ -48,7 +61,12 @@ function PhoneBook() {
     event.preventDefault();
     }
     const filteredPersons = filter ? persons.find((element) => element.name === filter) : persons
-  
+
+    let label;
+    function toggleImportance(){
+        label = persons.map(person => person.important)
+        label  ? 'make not important' : 'make important';
+    }
   return <>
       <div className="container p-3 text-center">
     <h2>Phonebook</h2>
@@ -56,7 +74,7 @@ function PhoneBook() {
       Filter: <input type="text" value={filter} onChange={handlePhoneFilterChange} placeholder="Insert a name"/> 
     </form>
     <div>
-      {/* {filteredPersons && <Phonebook name={filteredPersons.name} number={filteredPersons.number} key={filteredPersons.number}/>} */}
+      {filteredPersons && <p key={filteredPersons.number}> {filteredPersons.name} {filteredPersons.number}</p>}
     </div>
 
     <h4>Add a new contact</h4>
@@ -66,7 +84,7 @@ function PhoneBook() {
             Name: <input value={newName} onChange={handlePhoneNameChange}/>
           </div>
           <div className="m-2">
-            Number: <input type="number" value={newNumber} onChange={handlePhoneNumberChange}/>
+            Number: <input type="tel" value={newNumber} onChange={handlePhoneNumberChange}/>
           </div>
         </div>
       <div>
@@ -77,7 +95,11 @@ function PhoneBook() {
     <h2>Numbers</h2>
     <div className="container d-flex justify-content-center aling-items-center">
       <ul className="list-group list-group-flush">
-          {/* {persons.map(person => <Phonebook  name={person.name} number={person.number} key={person.number}/>)} */}
+          {persons.map(person => <>
+            <li key={person.number} className="list-group-item"> {person.name} {person.number}</li>
+            <button onClick={toggleImportance}>{label}</button>
+          </>
+          )}
       </ul>
     </div>
   </div>
