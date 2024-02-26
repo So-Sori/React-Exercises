@@ -6,7 +6,9 @@ import Counterdouble from "./part1/Counterdouble";
 import Feedback from "./part1/1.6/Feedback";
 import Courses from "./part2/2.1/Courses";
 import Note from "./part2/2.6/Note"
+import Notes from "./part2/2.1/Notes"
 import Phonebook from "./part2/2.6/Phonebook"
+import Component from "./Component";
 
 function App() {
   //Notes app
@@ -80,7 +82,6 @@ function App() {
     event.preventDefault();
   }
   const filteredPersons = filter ? persons.find((element) => element.name === filter) : persons
-  console.log(filteredPersons)
 
   const courses = [
     {
@@ -128,76 +129,75 @@ function App() {
   ]
 
   setTimeout(
-    () => setCounter(counter + 1),
+    () => {setCounter(counter + 1)},
     1000
   )
 
   return <>
-      <Counter counter = {counter}/>
-      <Feedback title="Feedback" op1="Good!" op2="Neutral" op3="Bad!"/>
+    <Counter counter = {counter}/>
+    <Feedback title="Feedback" op1="Good!" op2="Neutral" op3="Bad!"/>
 
-      <Courses course={courses} sum={0}/>
+    <Courses course={courses} sum={0}/>
 
-      <div className="container-fluid py-5 d-flex justify-content-center aling-item-center">
-        <Clicker />
-      </div>
-
-      <div className="container-fluid py-5 d-flex justify-content-center aling-item-center">
-        <Counterdouble />
-
-      </div>
-      <div className="container p-3 text-center">
-      <h1>Notes</h1>
-      <div>
-        <button className="btn btn-outline-primary" onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all' }
-        </button>
-      </div>
-      <ul className="list-group p-2">
-        {notesToShow.map(note => 
-          <Note key={note.id} note={note.content}/>
-        )}
-      </ul>
-
-      <form onSubmit={addNote}>
-        <input value={newNote}  onChange={handleNoteChange} />
-        <button className="m-2 p-2 btn btn-primary" type="submit">Save</button>
-      </form>   
+    <div className="container-fluid py-5 d-flex justify-content-center aling-item-center">
+      <Clicker />
     </div>
 
+    <div className="container-fluid py-5 d-flex justify-content-center aling-item-center">
+      <Counterdouble />
 
+    </div>
     <div className="container p-3 text-center">
-      <h2>Phonebook</h2>
-      <form onSubmit={Phonefilter} className="my-4">
-        Filter: <input type="text" value={filter} onChange={handlePhoneFilterChange} placeholder="Insert a name"/> 
-        <button className="m-2 p-2 btn btn-primary" type="submit">Find</button>
-      </form>
-      <div>
-        {filteredPersons && <Phonebook name={filteredPersons.name} number={filteredPersons.number} key={filteredPersons.number}/>}
-      </div>
-
-      <h4>Add a new contact</h4>
-      <form  onSubmit={addPhoneBook}>
-          <div>
-            <div className="m-2">
-              Name: <input value={newName} onChange={handlePhoneNameChange}/>
-            </div>
-            <div className="m-2">
-              Number: <input type="number" value={newNumber} onChange={handlePhoneNumberChange}/>
-            </div>
-          </div>
-        <div>
-          <button className="m-2 p-2 btn btn-primary" type="submit">Add</button>
-        </div>
-      </form>
-
-      <h2>Numbers</h2>
-      <div className="container d-flex justify-content-center aling-items-center">
-        <ul className="list-group list-group-flush">
-            {persons.map(person => <Phonebook  name={person.name} number={person.number} key={person.number}/>)}
-        </ul>
-      </div>
+    <h1>Notes</h1>
+    <div>
+      <button className="btn btn-outline-primary" onClick={() => setShowAll(!showAll)}>
+        show {showAll ? 'important' : 'all' }
+      </button>
     </div>
+    <ul className="list-group p-2">
+      {notesToShow.map(note => 
+        <Note key={note.id} note={note.content}/>
+      )}
+    </ul>
+
+    <form onSubmit={addNote}>
+      <input value={newNote}  onChange={handleNoteChange} />
+      <button className="m-2 p-2 btn btn-primary" type="submit">Save</button>
+    </form>   
+  </div>
+
+
+  <div className="container p-3 text-center">
+    <h2>Phonebook</h2>
+    <form onSubmit={Phonefilter} className="my-4">
+      Filter: <input type="text" value={filter} onChange={handlePhoneFilterChange} placeholder="Insert a name"/> 
+    </form>
+    <div>
+      {filteredPersons && <Phonebook name={filteredPersons.name} number={filteredPersons.number} key={filteredPersons.number}/>}
+    </div>
+
+    <h4>Add a new contact</h4>
+    <form  onSubmit={addPhoneBook}>
+        <div>
+          <div className="m-2">
+            Name: <input value={newName} onChange={handlePhoneNameChange}/>
+          </div>
+          <div className="m-2">
+            Number: <input type="number" value={newNumber} onChange={handlePhoneNumberChange}/>
+          </div>
+        </div>
+      <div>
+        <button className="m-2 p-2 btn btn-primary" type="submit">Add</button>
+      </div>
+    </form>
+
+    <h2>Numbers</h2>
+    <div className="container d-flex justify-content-center aling-items-center">
+      <ul className="list-group list-group-flush">
+          {persons.map(person => <Phonebook  name={person.name} number={person.number} key={person.number}/>)}
+      </ul>
+    </div>
+  </div>
     </>
 }
 
