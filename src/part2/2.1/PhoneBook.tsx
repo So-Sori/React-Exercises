@@ -1,22 +1,23 @@
 import { useState,useEffect } from "react";
 import axios from "axios"
 
-
-interface IProps{
-  labelBtn : string
-}
 interface IPhoneBook{
+    id: string,
     name: string,
     number: string,
     important: boolean
 }
 
-function PhoneBook({labelBtn}:IProps) {
+type INewPhoneBook = Omit<IPhoneBook, "id">
+
+function PhoneBook() {
     
-    const [persons, setPersons] = useState([]); 
+    const [persons, setPersons] = useState<IPhoneBook[]>([]); 
     const [newName, setNewName] = useState("");
     const [newNumber, setNewNumber] = useState("");
     const [filter, setFilter] = useState("");
+    const url = `http://localhost:3001/persons/`;
+
 
     useEffect(()=>{
         axios.get("http://localhost:3001/persons")
@@ -28,26 +29,35 @@ function PhoneBook({labelBtn}:IProps) {
     function addPhoneBook(event:React.FormEvent<HTMLFormElement>){
         event.preventDefault();
     
-        const phoneBookObj: IPhoneBook = {
+        const phoneBookObj: INewPhoneBook = {
           name: newName,
           number: newNumber,
           important: Math.random() < 0.5
         }
         const isExist = persons.find((element) => element.name === newName || element.number === newNumber)
-    
         if (!isExist){
-          setPersons(persons.concat(phoneBookObj));
+          setPersons(persons.concat({ ...phoneBookObj, id: persons.length }));
           setNewName("");
           setNewNumber("");
         }else{
-          alert(`You probably have already add "${newName}" or phone number: "${newNumber}" to your phonebook`)
+          if (confirm(`You have already added this name"${newName}" or phone number "${newNumber}" to your phonebook, do you want to change the old number with a new one`)) {
+            const personToChange = persons.find(p => p.id === isExist.id)
+            const changedNumber = {...personToChange,number: newNumber,id: personToChange?.id};
+            console.log(changedNumber.id)
+            
+            axios.put<IPhoneBook>(`${url}${changedNumber.id}`, changedNumber).then(response => {
+              // setPersons(persons.map(p => p.id !== changedNumber.id ? response.data : p))
+              console.log(response.data)
+              
+            })
+          }
         }
 
-        axios
-        .post('http://localhost:3001/persons', phoneBookObj)
-        .then(response => {
-            setPersons(persons.concat(response.data));
-        })
+        // axios
+        // .post('http://localhost:3001/persons', phoneBookObj)
+        // .then(response => {
+        //     setPersons(persons.concat(response.data));
+        // })
     }
 
     const handlePhoneNameChange = (event:React.ChangeEvent<HTMLInputElement>) => {
@@ -68,18 +78,33 @@ function PhoneBook({labelBtn}:IProps) {
     const filteredPersons = filter ? persons.find((element) => element.name === filter) : persons
 
 
+    
     function toggleImportance(id:string){
-      const url = `http://localhost:3001/persons/${id}`;
       const person = persons.find(p => p.id === id);
       const changedPerson = { ...person, important: !person.important };
-      labelBtn = person.important ? 'make not important': 'make important';
     
-      axios.put(url, changedPerson).then(response => {
+      axios.put(url + id, changedPerson).then(response => {
         setPersons(persons.map(p => p.id !== id ? p : response.data))
       })
     }
 
-  return <>
+    function deletePhoneBook(id:string){
+      const person = persons.find(p => p.id === id);
+
+      if (confirm(`Do you want to delete ${person.name}`)) {
+        axios.delete(url + id).then(response => {
+          alert(`Deleted user ${response.data.name}`);
+          setPersons(persons.filter(p => p.id !== id))
+        })
+        .catch(error => {
+          alert(`the user '${person.name}' was already deleted from server`);
+          console.log(error);
+        })
+      }
+    
+    }
+
+    return <>
 
     <div className="container p-3 text-center">
       <h2>Phonebook</h2>
@@ -94,10 +119,10 @@ function PhoneBook({labelBtn}:IProps) {
       <form  onSubmit={addPhoneBook}>
           <div>
             <div className="m-2">
-              Name: <input value={newName} onChange={handlePhoneNameChange}/>
+              Name: <input value={newName} placeholder ="Moe San" onChange={handlePhoneNameChange}/>
             </div>
             <div className="m-2">
-              Number: <input type="tel" value={newNumber} onChange={handlePhoneNumberChange}/>
+              Number: <input type="tel" pattern="^[2-9]\d{2}-\d{3}-\d{4}$" placeholder="800-555-5555" value={newNumber} onChange={handlePhoneNumberChange}/>
             </div>
           </div>
         <div>
@@ -107,12 +132,15 @@ function PhoneBook({labelBtn}:IProps) {
 
       <h2>Numbers</h2>
       <div className="container d-flex justify-content-center aling-items-center">
-        <ul className="list-group list-group-flush">
+        <ul className="list-group list-group-flush" key="fatherElement">
             {persons.map(person =>
                 <li key={person.id} className="list-group-item">
                 {person.name} {person.number}
-                <button className= "m-1 btn btn-success" onClick={() => toggleImportance(person.id)}>
+                <button className = {person.important ? "m-1 btn btn-success" : "m-1 btn btn-danger"} onClick={() => toggleImportance(person.id)}>
                   {person.important ? "Make Not Important" : "Make Important"}
+                </button>
+                <button className = "m-1 btn btn-outline-primary" onClick={() => deletePhoneBook(person.id)}>
+                  delete
                 </button>
                 </li>
             )}
