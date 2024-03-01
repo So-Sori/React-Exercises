@@ -6,8 +6,8 @@ import Counterdouble from "./part1/Counterdouble";
 import Feedback from "./part1/1.6/Feedback";
 import Courses from "./part2/2.1/Courses";
 import Note from "./part2/2.6/Note"
-// import Phonebook from "./part2/2.6/Phonebook"
 import PhoneBook from "./part2/2.1/PhoneBook";
+import Countries from "./part2/2.18/Countries";
 
 function App() {
   //Notes app
@@ -121,6 +121,7 @@ function App() {
   </div>
 
   <PhoneBook />
+  <Countries />
   </>
 }
 

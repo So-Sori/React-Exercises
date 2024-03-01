@@ -26,6 +26,14 @@ function PhoneBook() {
         })
     },[])
 
+    function postDataServer(phoneBookObj:INewPhoneBook) {
+        axios
+        .post('http://localhost:3001/persons', phoneBookObj)
+        .then(response => {
+            setPersons(persons.concat(response.data));
+        })
+    }
+
     function addPhoneBook(event:React.FormEvent<HTMLFormElement>){
         event.preventDefault();
     
@@ -37,27 +45,22 @@ function PhoneBook() {
         const isExist = persons.find((element) => element.name === newName || element.number === newNumber)
         if (!isExist){
           setPersons(persons.concat({ ...phoneBookObj, id: persons.length }));
+          postDataServer(phoneBookObj);
+          alertsTemplate("New user added successfully");
           setNewName("");
           setNewNumber("");
         }else{
-          if (confirm(`You have already added this name"${newName}" or phone number "${newNumber}" to your phonebook, do you want to change the old number with a new one`)) {
+          if (confirm(`You have already added this name"${newName}" or phone number "${newNumber}" to your phonebook, do you want to change the old number with the new one`)) {
             const personToChange = persons.find(p => p.id === isExist.id)
-            const changedNumber = {...personToChange,number: newNumber,id: personToChange?.id};
-            console.log(changedNumber.id)
+            const changedNumber = {...personToChange,number: newNumber};
             
-            axios.put<IPhoneBook>(`${url}${changedNumber.id}`, changedNumber).then(response => {
-              // setPersons(persons.map(p => p.id !== changedNumber.id ? response.data : p))
-              console.log(response.data)
-              
+            axios.put<IPhoneBook>(`${url}${personToChange?.id}`, changedNumber).then(response => {
+              setPersons(persons.map(p => p.id !== personToChange?.id ? p : response.data));
+              setNewName("");
+              setNewNumber("");
             })
           }
         }
-
-        // axios
-        // .post('http://localhost:3001/persons', phoneBookObj)
-        // .then(response => {
-        //     setPersons(persons.concat(response.data));
-        // })
     }
 
     const handlePhoneNameChange = (event:React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +84,7 @@ function PhoneBook() {
     
     function toggleImportance(id:string){
       const person = persons.find(p => p.id === id);
-      const changedPerson = { ...person, important: !person.important };
+      const changedPerson = { ...person, important: !person?.important };
     
       axios.put(url + id, changedPerson).then(response => {
         setPersons(persons.map(p => p.id !== id ? p : response.data))
@@ -91,17 +94,20 @@ function PhoneBook() {
     function deletePhoneBook(id:string){
       const person = persons.find(p => p.id === id);
 
-      if (confirm(`Do you want to delete ${person.name}`)) {
+      if (confirm(`Do you want to delete ${person?.name}`)) {
         axios.delete(url + id).then(response => {
           alert(`Deleted user ${response.data.name}`);
-          setPersons(persons.filter(p => p.id !== id))
+          setPersons(persons.filter(p => p.id !== id));
         })
         .catch(error => {
-          alert(`the user '${person.name}' was already deleted from server`);
-          console.log(error);
+          alertsTemplate(`the user '${person?.name}' was already deleted from server\n${error}`);
         })
       }
     
+    }
+
+    function alertsTemplate(info:string) {
+      return alert(info)
     }
 
     return <>
