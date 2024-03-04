@@ -82,9 +82,9 @@ function App() {
     },
   ];
 
-  setTimeout(() => {
-    setCounter(counter + 1);
-  }, 1000);
+  // setTimeout(() => {
+  //   setCounter(counter + 1);
+  // }, 1000);
 
   return (
     <>
