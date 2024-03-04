@@ -1,16 +1,24 @@
 import axios from "axios"
 import { useState,useEffect } from "react"
 import ErrorMessage  from "./ErrorMessage"
+/* TODO 
+    *SHOW INFO ABOUT COUNTRY
+        -NAME
+        -AREA
+        -CAPITAL
+        -FLAG
+        -LANGUAGES
+*/
 
 function Countries() {
-    const [countrys,setCountrys] = useState({});
-    const [inputValue,setInputValue] = useState('');
+    const [countrys,setCountrys] = useState([{}]);
+    const [inputValue,setInputValue] = useState("");
+    const [filterCountry,setfilterCountry] = useState([{}]);
     const apiLink = "https://studies.cs.helsinki.fi/restcountries/api/all";
 
     useEffect(()=> {
-        axios.get(apiLink + inputValue).then(response => {
+        axios.get(apiLink).then(response => {
             setCountrys(response.data)
-            console.log(response.data);
         }).catch(err => <ErrorMessage error={err}/>)
     },[])
 
@@ -19,6 +27,26 @@ function Countries() {
     }
     function handleInputChange(event:React.ChangeEvent<HTMLInputElement>) {
         setInputValue(event.target.value);
+        const mapCountry = countrys.map(country => country)
+        setfilterCountry(mapCountry.filter(coun => coun.name.common.includes(inputValue)))        
+    }
+    function resultCountry() {
+        console.log(filterCountry);
+        console.log(filterCountry.length);
+        
+        if (filterCountry.length > 10) {
+            return <div>Too many results, please be more specific</div>
+        }
+        else if(filterCountry.length === 1){
+            return <div>Aceptable</div>
+        }
+        else if(filterCountry.length > 1 && filterCountry.length <= 10){
+            // return <div>OK than</div>
+            filterCountry.map(country => {return country.name})
+        }
+        else{
+            return <div>Search a country</div>
+        }
     }
   return <>
   <div className="container text-center m-2 p-2">
@@ -26,6 +54,9 @@ function Countries() {
     <form onSubmit={searchCountry}>
         <p className="fs-2">Find a country:</p><input className="px-3 rounded-pill" type="text" value={inputValue} onChange={handleInputChange}/>
     </form>
+    <div className="container">
+        {resultCountry()}
+    </div>
   </div>
   </>
 }

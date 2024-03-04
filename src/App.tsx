@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import Counter from "./part1/Counter";
 import Clicker from "./part1/Clicker";
 import Counterdouble from "./part1/Counterdouble";
 import Feedback from "./part1/1.6/Feedback";
 import Courses from "./part2/2.1/Courses";
-import Note from "./part2/2.6/Note"
+import Note from "./part2/2.6/Note";
 import PhoneBook from "./part2/2.1/PhoneBook";
 import Countries from "./part2/2.18/Countries";
 
@@ -14,115 +13,123 @@ function App() {
   const [counter, setCounter] = useState(0);
 
   const [notes, setNotes] = useState([]);
-  const [newNote, setNewNote] = useState('a new note...');
+  const [newNote, setNewNote] = useState("a new note...");
   const [showAll, setShowAll] = useState(true);
 
-  
-  const addNote = (event:React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const addNote = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
     const noteObject = {
       content: newNote,
       important: Math.random() < 0.5,
       id: notes.length + 1,
-    }
-  
+    };
+
     setNotes(notes.concat(noteObject));
-    setNewNote('');
-  }
+    setNewNote("");
+  };
 
-  const handleNoteChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-    setNewNote(event.target.value)
-  }
+  const handleNoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewNote(event.target.value);
+  };
 
-  const notesToShow = showAll ? notes : notes.filter(note => note.important === true)
+  const notesToShow = showAll
+    ? notes
+    : notes.filter((note) => note.important === true);
 
   const courses = [
     {
-      name: 'Half Stack application development',
+      name: "Half Stack application development",
       id: 1,
       parts: [
         {
-          name: 'Fundamentals of React',
+          name: "Fundamentals of React",
           exercises: 10,
-          id: 1
+          id: 1,
         },
         {
-          name: 'Using props to pass data',
+          name: "Using props to pass data",
           exercises: 7,
-          id: 2
+          id: 2,
         },
         {
-          name: 'State of a component',
+          name: "State of a component",
           exercises: 14,
-          id: 3
+          id: 3,
         },
         {
-          name: 'Redux',
+          name: "Redux",
           exercises: 11,
-          id: 4
-        }
-      ]
-    }, 
+          id: 4,
+        },
+      ],
+    },
     {
-      name: 'Node.js',
+      name: "Node.js",
       id: 2,
       parts: [
         {
-          name: 'Routing',
+          name: "Routing",
           exercises: 3,
-          id: 1
+          id: 1,
         },
         {
-          name: 'Middlewares',
+          name: "Middlewares",
           exercises: 7,
-          id: 2
-        }
-      ]
-    }
-  ]
+          id: 2,
+        },
+      ],
+    },
+  ];
 
-  setTimeout(
-    () => {setCounter(counter + 1)},
-    1000
-  )
+  setTimeout(() => {
+    setCounter(counter + 1);
+  }, 1000);
 
-  return <>
-    <Counter counter = {counter}/>
-    <Feedback title="Feedback" op1="Good!" op2="Neutral" op3="Bad!"/>
+  return (
+    <>
+      <Counter counter={counter} />
+      <Feedback title="Feedback" op1="Good!" op2="Neutral" op3="Bad!" />
 
-    <Courses course={courses} sum={0}/>
+      <Courses course={courses} sum={0} />
 
-    <div className="container-fluid py-5 d-flex justify-content-center aling-item-center">
-      <Clicker />
-    </div>
+      <div className="container-fluid py-5 d-flex justify-content-center aling-item-center">
+        <Clicker />
+      </div>
 
-    <div className="container-fluid py-5 d-flex justify-content-center aling-item-center">
-      <Counterdouble />
+      <div className="container-fluid py-5 d-flex justify-content-center aling-item-center">
+        <Counterdouble />
+      </div>
+      <div className="container p-3 text-center">
+        <h1>Notes</h1>
+        <div>
+          <button
+            className="btn btn-outline-primary"
+            onClick={() => setShowAll(!showAll)}
+          >
+            show {showAll ? "important" : "all"}
+          </button>
+        </div>
+        <ul className="list-group p-2">
+          {notesToShow.map((note) => (
+            <Note key={note.id} note={note.content} />
+          ))}
+        </ul>
 
-    </div>
-    <div className="container p-3 text-center">
-    <h1>Notes</h1>
-    <div>
-      <button className="btn btn-outline-primary" onClick={() => setShowAll(!showAll)}>
-        show {showAll ? 'important' : 'all' }
-      </button>
-    </div>
-    <ul className="list-group p-2">
-      {notesToShow.map(note => 
-        <Note key={note.id} note={note.content}/>
-      )}
-    </ul>
+        <form onSubmit={addNote}>
+          <input value={newNote} onChange={handleNoteChange} />
+          <button className="m-2 p-2 btn btn-primary" type="submit">
+            Save
+          </button>
+        </form>
+      </div>
 
-    <form onSubmit={addNote}>
-      <input value={newNote}  onChange={handleNoteChange} />
-      <button className="m-2 p-2 btn btn-primary" type="submit">Save</button>
-    </form>   
-  </div>
-
-  <PhoneBook />
-  <Countries />
-  </>
+      <PhoneBook />
+      <div className="container text-center">
+        <Countries />
+      </div>
+    </>
+  );
 }
 
-export default App
+export default App;

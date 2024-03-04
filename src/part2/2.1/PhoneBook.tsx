@@ -46,9 +46,9 @@ function PhoneBook() {
         if (!isExist){
           setPersons(persons.concat({ ...phoneBookObj, id: persons.length }));
           postDataServer(phoneBookObj);
-          alertsTemplate("New user added successfully");
           setNewName("");
           setNewNumber("");
+          alertsTemplate("New user added successfully");
         }else{
           if (confirm(`You have already added this name"${newName}" or phone number "${newNumber}" to your phonebook, do you want to change the old number with the new one`)) {
             const personToChange = persons.find(p => p.id === isExist.id)
