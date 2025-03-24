@@ -1,2 +1,2 @@
-# Complete Intro to React, v9
-## Frontend Master
+ # React exercises
+ ## Each branch contains a source course with its exersices
