@@ -1,7 +1,2 @@
-FullStack Developer Web Open Course
-
-Local Development Server: Vite
-
-Language: TypeScript
-
-Library: React
+# Complete Intro to React, v9
+## Frontend Master
