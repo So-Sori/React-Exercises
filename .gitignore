@@ -23,6 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 *ts
-*json
+*package-lock.json
 *cjs
 /public
+*.env
